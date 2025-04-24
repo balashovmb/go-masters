@@ -23,6 +23,8 @@ func TestAdd(t *testing.T) {
 func TestRunSchedule(t *testing.T) {
 	RunSchedule()
 
+	time.Sleep(1000 * time.Millisecond)
+
 	if len(s.jobs) != 0 {
 		t.Errorf("Expected 0 jobs, got %d", len(s.jobs))
 	}

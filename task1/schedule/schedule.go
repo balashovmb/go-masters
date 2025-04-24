@@ -6,31 +6,37 @@ import (
 	"time"
 )
 
-type Taskable interface {
+type Task interface {
 	Exec()
 }
 
 type Job struct {
-	task Taskable
+	task Task
 	time time.Time
 }
 
 type Schedule struct {
-	mu   sync.Mutex
-	jobs []Job
+	mu      sync.Mutex
+	jobs    []Job
+	running bool
 }
 
-var s = &Schedule{}
+var s = &Schedule{running: false}
 
-func Add(task Taskable, time time.Time) {
+func Add(task Task, time time.Time) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.jobs = append(s.jobs, Job{task, time})
 }
 
 func RunSchedule() {
+	if s.running {
+		return
+	}
+	s.running = true
 	for {
 		if len(s.jobs) == 0 {
+			s.running = false
 			return
 		}
 
