@@ -2,13 +2,13 @@ package main
 
 import (
 	"flag"
-	"go-masters/task2/internal/api"
 	"log"
+
+	"go-masters/task2/internal/api"
 	"net/http"
 )
 
 func main() {
-	api := &api.API{}
 	var port string
 	flag.StringVar(&port, "p", "8080", "keyword")
 	flag.Parse()

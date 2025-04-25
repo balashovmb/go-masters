@@ -4,7 +4,9 @@ import (
 	"fmt"
 )
 
-type ErrBadRequest struct{}
+type ErrBadRequest struct {
+	massage string
+}
 
 type ErrNotFound struct {
 	Pair string
@@ -13,7 +15,7 @@ type ErrNotFound struct {
 type ErrInternalServerError struct{}
 
 func (err ErrBadRequest) Error() string {
-	return "bad request"
+	return err.massage
 }
 
 func (err ErrNotFound) Error() string {
@@ -22,4 +24,12 @@ func (err ErrNotFound) Error() string {
 
 func (err ErrInternalServerError) Error() string {
 	return "internal server error"
+}
+
+func NewErrNotFound(pair string) error {
+	return ErrNotFound{Pair: pair}
+}
+
+func NewErrBadRequest(massage string) error {
+	return ErrBadRequest{massage: massage}
 }

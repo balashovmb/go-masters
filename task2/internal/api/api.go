@@ -10,32 +10,30 @@ import (
 	"go-masters/task2/internal/rates"
 )
 
-type API struct{}
-
 type RateRequest struct {
 	From string `json:"from"`
 	To   string `json:"to"`
 }
 
-func (a *API) Rate(w http.ResponseWriter, r *http.Request) {
+func Rate(w http.ResponseWriter, r *http.Request) {
 
 	var rReq = RateRequest{}
 
 	err := json.NewDecoder(r.Body).Decode(&rReq)
 	if err != nil {
-		a.WriteError(w, &errs.ErrBadRequest{})
+		WriteError(w, errs.NewErrBadRequest(err.Error()))
 		return
 	}
 
 	if rReq.From == "" || rReq.To == "" {
-		a.WriteError(w, &errs.ErrBadRequest{})
+		WriteError(w, errs.NewErrBadRequest("currency code is empty"))
 		return
 	}
 
 	pair := strings.ToUpper(rReq.From) + "-" + strings.ToUpper(rReq.To)
 	rate, ok := rates.Rates[pair]
 	if !ok {
-		a.WriteError(w, &errs.ErrNotFound{Pair: pair})
+		WriteError(w, errs.NewErrNotFound(pair))
 		return
 	}
 
@@ -45,7 +43,7 @@ func (a *API) Rate(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(response))
 }
 
-func (a *API) WriteError(w http.ResponseWriter, err error) {
+func WriteError(w http.ResponseWriter, err error) {
 	w.Header().Set("Content-Type", "application/json")
 	errMassage := err.Error()
 	var errStatus int
