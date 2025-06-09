@@ -1,0 +1,3 @@
+final-project/docker-compose/ollama_volume
+final-project/docker-compose/postgres_volume
+final-project/docker-compose/grafana_volume

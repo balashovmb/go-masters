@@ -1,0 +1,4 @@
+port: 8080
+db_conn_str: "postgres://app-user:app-password@172.17.0.1:54320/app-db?sslmode=disable"
+llm_model: "qwen3:4b"
+llm_url: "http://localhost:11434/api/generate"
