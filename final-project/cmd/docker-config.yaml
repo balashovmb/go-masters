@@ -1,0 +1,2 @@
+port: 8080
+db_conn_str: "postgres://app-user:app-password@app-postgres:5432/app-db?sslmode=disable"
