@@ -32,6 +32,11 @@ func Test_calcFibo(t *testing.T) {
 			n:    -1,
 			want: 0,
 		},
+		{
+			name: "forty two",
+			n:    42,
+			want: 165580141,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -43,25 +48,35 @@ func Test_calcFibo(t *testing.T) {
 }
 
 func Test_fibo(t *testing.T) {
-	server := httptest.NewServer(http.HandlerFunc(fibo))
+	router := http.NewServeMux()
+	router.HandleFunc("/fibo", fibo)
+	server := httptest.NewServer(router)
 	defer server.Close()
+
 	tests := []struct {
 		name       string
-		params     string
+		url        string
 		wantStatus int
 	}{
-		{name: "good param",
-			params:     "?N=3",
-			wantStatus: 200,
+		{
+			name:       "good param",
+			url:        "/fibo?N=3",
+			wantStatus: http.StatusOK,
 		},
-		{name: "bad param",
-			params:     "?N=1.1",
-			wantStatus: 400,
+		{
+			name:       "bad param",
+			url:        "/fibo?N=1.1",
+			wantStatus: http.StatusBadRequest,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			resp, _ := http.Get(server.URL + tt.params)
+			resp, err := http.Get(server.URL + tt.url)
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer resp.Body.Close()
+
 			if resp.StatusCode != tt.wantStatus {
 				t.Errorf("Expected status %d, got %d", tt.wantStatus, resp.StatusCode)
 			}

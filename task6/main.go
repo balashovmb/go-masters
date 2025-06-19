@@ -37,10 +37,14 @@ func calcFibo(n int) int {
 		return 1
 	}
 
-	fibSeq := make([]int, 0, n)
-	fibSeq = append(fibSeq, 0, 1)
+	prevFib := 0
+	currFib := 1
+
 	for i := 2; i < n; i++ {
-		fibSeq = append(fibSeq, fibSeq[i-1]+fibSeq[i-2])
+		nextFib := prevFib + currFib
+		prevFib = currFib
+		currFib = nextFib
 	}
-	return fibSeq[n-1]
+
+	return currFib
 }
