@@ -32,8 +32,13 @@ func main() {
 }
 
 func query(w http.ResponseWriter, r *http.Request) {
-	params := r.URL.Query()
-	q := params.Get("q")
+	q := r.URL.Query().Get("q")
+
+	if q == "" {
+		http.Error(w, "query is empty", http.StatusBadRequest)
+		return
+	}
+
 	res, err := ollamaRequest(q)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
